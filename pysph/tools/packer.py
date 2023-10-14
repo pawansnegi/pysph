@@ -64,7 +64,7 @@ class Packer(Application):
                  filter_layers=False, reduce_dfreq=False,
                  tol=1e-2, scale=1.0, shift=False,
                  invert_normal=False, pb=None, nu=None,
-                 k=None, dfreq=-1, no_solid=False):
+                 k=None, dfreq=-1, no_solid=False, isclosed=True):
         self.hdx = 1.2
         self.dx = dx
         self.x = x
@@ -90,13 +90,15 @@ class Packer(Application):
         self.out = out
         self.no_solid = no_solid
         self.add_opt_func = add_opt_func
+        self.isclosed = isclosed
 
         self.bound = self._get_bound()
 
         super(Packer, self).__init__(fname, output_dir, domain)
 
     def add_user_options(self, group):
-        self.add_opt_func(group)
+        for func in self.add_opt_func:
+            func(group)
 
     def _get_bound(self):
         import sys
@@ -142,6 +144,7 @@ class Packer(Application):
             self.dx, self.x, self.y, self.z, self.L, self.B, self.H)
 
     def create_particles(self):
+        from pysph.tools.geometry import remove_overlap_particles
         s = self.scheme
 
         bound = self.bound
@@ -164,14 +167,16 @@ class Packer(Application):
                 nodes = s.create_boundary_node(
                     self.filename, [self.x, self.y], scale=self.scale,
                     shift=self.shift, invert=self.invert_normal,
-                    name='nodes')
+                    name='nodes', isclosed=self.isclosed)
             else:
                 nodes = s.create_boundary_node(
                     self.filename, scale=self.scale, shift=self.shift,
-                    invert=self.invert_normal, name='nodes')
+                    invert=self.invert_normal, name='nodes', isclosed=self.isclosed)
 
             boundary = get_particle_array(name='boundary')
             particles.extend([boundary, nodes])
+
+        remove_overlap_particles(frozen, free, self.dx, dim=2)
 
         s.setup_properties(particles)
         for pa in particles:
@@ -224,11 +229,14 @@ class Packer(Application):
 
 class HexaToRectLayer(Packer):
     def create_particles(self):
+        from pysph.tools.geometry import remove_overlap_particles
         s = self.scheme
 
         bound = self.bound
         free = s.create_free_particles(bound, name='free', outer=True)
         frozen = s.create_frozen_container(bound, name='frozen', outer=True)
+
+        remove_overlap_particles(frozen, free, self.dx, dim=2)
         particles = [free, frozen]
         s.setup_properties(particles)
         for pa in particles:

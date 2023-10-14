@@ -878,7 +878,7 @@ def get_packed_2d_particles_from_surface_coordinates(
         add_opt_func, folder, dx, x, y, pb=None, nu=None, k=None, scale=1.0,
         shift=False, dfreq=-1, invert_normal=False, hardpoints=None,
         use_prediction=False, filter_layers=False, reduce_dfreq=False,
-        tol=1e-2):
+        tol=1e-2, isclosed=True):
     """ Creates a packed configuration of particles around the given
     coordinates of a 2D geometry.
 
@@ -916,6 +916,8 @@ def get_packed_2d_particles_from_surface_coordinates(
         if True, reduce projection frequency
     tol : float
         tolerance value for convergence (default: 1e-2)
+    isclosed : bool
+        True if the curve is closed
 
     Returns
     -------
@@ -946,7 +948,7 @@ def get_packed_2d_particles_from_surface_coordinates(
             x=x, y=y, pb=pb, nu=nu, k=k, dfreq=dfreq, hardpoints=hardpoints,
             use_prediction=use_prediction, filter_layers=filter_layers,
             reduce_dfreq=reduce_dfreq, tol=tol, scale=scale, shift=shift,
-            invert_normal=invert_normal)
+            invert_normal=invert_normal, isclosed=isclosed)
         packer.run()
         packer.post_process(packer.info_filename)
 

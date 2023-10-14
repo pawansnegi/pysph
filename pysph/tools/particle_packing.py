@@ -287,10 +287,10 @@ def create_frozen_container_outer(
                  (z - (b[5] + eps + nl) < 1e-14))
 
     frozen = get_particle_array(
-        x=x[cond], y=y[cond], z=z[cond], m=m, rho=rho, h=h, name=name)
-    ids = np.where(inner.h > -1)[0]
-    print(ids)
-    inner.extract_particles(ids, frozen)
+        x=x, y=y, z=z, m=m, rho=rho, h=h, name=name)
+    # ids = np.where(inner.h > -1)[0]
+    # print(ids)
+    # inner.extract_particles(ids, frozen)
     return frozen
 
 
