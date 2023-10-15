@@ -1541,6 +1541,9 @@ class ParticlePacking(Scheme):
                 xf = data['xf']
                 yf = data['yf']
                 zf = data['zf']
+                xb = data['xb']
+                yb = data['yb']
+                zb = data['zb']
                 xf = np.concatenate((xf, free.x))
                 yf = np.concatenate((yf, free.y))
                 zf = np.concatenate((zf, free.z))
@@ -1551,7 +1554,7 @@ class ParticlePacking(Scheme):
                 xs = []
                 ys = []
                 zs = []
-            return np.savez(filename, xs=xs, ys=ys, zs=zs, xf=xf, yf=yf, zf=zf)
+            return np.savez(filename, xs=xs, ys=ys, zs=zs, xf=xf, yf=yf, zf=zf, xb=xb, yb=yb, zb=yb)
 
         solid_nodes_n = solid_nodes.name
         frozen_n = frozen.name
@@ -1619,12 +1622,12 @@ class ParticlePacking(Scheme):
         yfluid = np.concatenate((yi, f_yi))
         zfluid = np.concatenate((zi, f_zi))
 
-        xsolid = np.concatenate((xf, xb, f_xf))
-        ysolid = np.concatenate((yf, yb, f_yf))
-        zsolid = np.concatenate((zf, zb, f_zf))
+        xsolid = np.concatenate((xf, f_xf))
+        ysolid = np.concatenate((yf, f_yf))
+        zsolid = np.concatenate((zf, f_zf))
 
         np.savez(filename, xs=xsolid, ys=ysolid, zs=zsolid,
-                 xf=xfluid, yf=yfluid, zf=zfluid)
+                 xf=xfluid, yf=yfluid, zf=zfluid, xb=xb, yb=yb, zb=zb)
 
     def setup_hardpoints(self, pa_solid_nodes, pa_fluid, pa_solid):
         if self.solver.t < 1e-14:

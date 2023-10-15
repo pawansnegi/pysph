@@ -53,7 +53,10 @@ def readdata(resfile):
     xf = data['xf']
     yf = data['yf']
     zf = data['zf']
-    return xs, ys, zs, xf, yf, zf
+    xb = data['xb']
+    yb = data['yb']
+    zb = data['zb']
+    return xs, ys, zs, xf, yf, zf, xb, yb, zb
 
 
 class Packer(Application):
